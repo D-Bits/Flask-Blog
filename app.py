@@ -1,4 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 from os import getenv
 from dotenv import load_dotenv
 from forms import RegistrationForm, LoginForm
@@ -7,6 +8,7 @@ from forms import RegistrationForm, LoginForm
 app = Flask(__name__)
 # Set secret key
 app.config['SECRET_KEY'] = getenv("SECRET_KEY")
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DB_URI")
 
 posts = [
     {
@@ -62,7 +64,17 @@ def register():
 @app.route('/login', methods=["GET", "POST"])
 def login():
 
-    form = RegistrationForm()
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        if form.email.data == "admin@blog.com" and form.password.data == "password":
+
+            flash("You have been logged in.", "success")
+            return redirect(url_for('index'))
+        
+        else:
+            flash("Login failed. Please check username and/or password.", "danger")
 
     return render_template('login.html', form=form, title="Login")
 

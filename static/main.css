@@ -10,7 +10,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-steel {
   background-color: #2b6a97;
-  border-bottom: 5px solid #413f3f;
+  border-bottom: 5px solid #5e7472;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -88,7 +88,8 @@ footer {
     background-color: #2b6a97;
     text-align: center;
     color: azure;
-    border-top: 5px solid #413f3f;
+    border-top: 5px solid #5e7472;
     padding-top: 2.5%;
     padding-bottom: 2.5%;
+    margin-top: 17.5%;
 }
