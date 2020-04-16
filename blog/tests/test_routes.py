@@ -5,6 +5,7 @@ from blog import app
 
 class RouteTests(TestCase):
 
+    # Test index route
     def test_index_route(self):
 
         with app.test_client() as tc:
