@@ -1,6 +1,8 @@
 from flask import render_template, redirect, url_for, flash
+from flask_login import login_user
 from blog.forms import RegistrationForm, LoginForm
-from blog import app
+from blog import app, bcrypt, db
+from blog.models import User
 
 
 posts = [
@@ -40,9 +42,16 @@ def register():
 
     if form.validate_on_submit():
 
+        # Hash AND salt the user's password w/ Bcrypt
+        hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_pass)
+        # Add the new user to the db, and commit the transaction
+        db.session.add(user)
+        db.session.commit()
+
         flash(f"Account created for {form.username.data}!", 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
     return render_template('register.html', form=form, title="Register")
 
@@ -55,11 +64,10 @@ def login():
 
     if form.validate_on_submit():
 
-        if form.email.data == "admin@blog.com" and form.password.data == "password":
-
-            flash("You have been logged in.", "success")
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('index'))
-        
         else:
             flash("Login failed. Please check username and/or password.", "danger")
 
