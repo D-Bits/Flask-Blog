@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from blog.models import User
@@ -16,7 +17,7 @@ class RegistrationForm(FlaskForm):
     # Make sure username is unique
     def validate_username(self, username):
 
-        user = User.query.filter_by(username.data).first()
+        user = User.query.filter_by(username=username.data).first()
 
         if user:
 
@@ -25,7 +26,7 @@ class RegistrationForm(FlaskForm):
     # Make sure email is unique
     def validate_email(self, email):
 
-        email = User.query.filter_by(email.data).first()
+        email = User.query.filter_by(email=email.data).first()
 
         if email:
 
@@ -39,3 +40,27 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+# For updating profile info
+class UpdateAccountInfo(FlaskForm):
+
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=25)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update')
+
+    # Make sure username is unique
+    def validate_username(self, username):
+        
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('That username is taken. Please choose a different one.')
+
+    # Make sure email is unique
+    def validate_email(self, email):
+
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already taken. Please choose a different one.')
