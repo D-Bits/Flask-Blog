@@ -20,6 +20,9 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 # Initialize login manager
 login_manager = LoginManager(app)
+# Set a login route
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
 
 # Load environment type from environment var
 ENV = getenv("ENV")
