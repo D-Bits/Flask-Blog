@@ -12,7 +12,9 @@ from blog.models import User, Post
 @app.route("/home")
 def index():
 
-    posts = Post.query.all()
+    page = request.args.get('page', 1, type=int)
+    # Paginate posts, and order from most most recent to least recent
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
 
     return render_template('index.html', title='Home', posts=posts)
 
@@ -145,6 +147,20 @@ def individual_post(post_id):
     post = Post.query.get_or_404(post_id)
 
     return render_template('post.html', title=post.title, post=post)
+    
+
+# Route for individual user's posts
+@app.route("/user/<string:username>")
+def user_posts(username):
+
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    # Paginate posts, and order from most most recent to least recent
+    posts = Post.query.filter_by(author=user)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=4)
+
+    return render_template('user_posts.html', title='Home', user=user, posts=posts)
 
 
 # Update existing posts
