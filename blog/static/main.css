@@ -57,6 +57,11 @@ a.article-title:hover {
   margin-right: 16px;
 }
 
+/*For pagination buttons*/
+#pagination {
+  text-align: center;
+}
+
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
@@ -92,5 +97,5 @@ footer {
     border-top: 5px solid #5e7472;
     padding-top: 2.5%;
     padding-bottom: 2.5%;
-    margin-top: 17.5%;
+    margin-top: 5.5%;
 }
