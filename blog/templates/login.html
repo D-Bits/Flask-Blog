@@ -50,7 +50,7 @@
             </div>
 
             <small class="text-muted">
-                <a class="ml-2" href="#">Forgot Password?</a>
+                <a class="ml-2" href="{{ url_for('reset_request') }}">Forgot Password?</a>
             </small>
 
         </form>
@@ -58,7 +58,7 @@
 
     <div class="border-top pt-3 mb-5">
         <small class="text-muted">
-            Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
+            Need An Account? <a class="ml-2 mb-10" href="{{ url_for('register') }}">Sign Up Now</a>
         </small>
     </div>
 

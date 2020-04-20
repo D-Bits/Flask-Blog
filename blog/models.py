@@ -1,6 +1,7 @@
-from blog import db, login_manager
+from blog import db, login_manager, app
 from datetime import datetime
 from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 @login_manager.user_loader
@@ -24,6 +25,25 @@ class User(db.Model, UserMixin):
     def __repr__(self):
 
         return f"User('{self.username}', '{self.email}', '{self.profile_image_file_name}')"
+
+    # Create password reset token that expires in 30 min
+    def get_reset_token(self, expires_seconds=1800):
+
+        s = Serializer(app.config['SECRET_KEY'], expires_seconds)
+
+        return s.dumps({"user_id": self.id}).decode('utf-8')
+
+    # Verify reset token
+    @staticmethod
+    def verify_reset_token(token):
+
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+
+        return User.query.get(user_id)
 
 
 class Post(db.Model):

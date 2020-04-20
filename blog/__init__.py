@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from os import getenv
 from dotenv import load_dotenv
+from flask_mail import Mail
 
 
 # Load env vars from .env file
@@ -23,6 +24,15 @@ login_manager = LoginManager(app)
 # Set a login route
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
+
+# Set constants for password reset email
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com' 
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = getenv('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = getenv('EMAIL_PASS')
+mail = Mail(app)
+
 
 # Load environment type from environment var
 ENV = getenv("ENV")
